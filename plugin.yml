@@ -1,0 +1,5 @@
+name: CreditsMoney
+main: cm.main.CreditsMoney
+version: 0.1
+description: This plugin is designed to automatically charge money.
+author: Igor Ilich
