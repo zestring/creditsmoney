@@ -7,11 +7,21 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+
+
+import net.milkbowl.vault.*;
+
+import cm.main.Handler;
 
 public class CreditsMoney extends JavaPlugin {
     
@@ -25,15 +35,29 @@ public class CreditsMoney extends JavaPlugin {
         log.info(String.format("[%s] Disabled Version %s", getDescription().getName(), getDescription().getVersion()));
     }
 
-    @Override
+    @Override    
     public void onEnable() {
-        if (!setupEconomy() ) {
-            log.severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-        setupPermissions();
-        setupChat();
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+            	Bukkit.broadcastMessage("Use the Javadocs next time");
+                getMoney();
+            }
+        }, 0L, 50L);
+    }
+    
+    private void getMoney() {
+    	Bukkit.broadcastMessage("It works too, but for console & players!");
+	    Economy econ = null;
+    	for (Player p : Bukkit.getOnlinePlayers()) {
+    		Bukkit.broadcastMessage(p.getDisplayName());
+    		Bukkit.broadcastMessage("It works too, but for console & players!" + p.getDisplayName());
+    	    econ.depositPlayer(p, 1);
+    	    EconomyResponse r = econ.bankBalance(p.getDisplayName());
+    	    r.toString();
+    	    Bukkit.broadcastMessage(r.toString());
+    	}
     }
     
     private boolean setupEconomy() {
